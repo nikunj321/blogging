@@ -4,7 +4,7 @@ const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 const { KnexAdapter: Adapter } = require('@keystonejs/adapter-knex');
 const PROJECT_NAME = process.env.PROJECT_NAME;
-const adapterConfig = { knexOptions: { connection: process.env.DATABASE_URL } };
+const adapterConfig = { knexOptions: { connection: process.env.DATABASE_URL }, dropDatabase: true };
 
 
 /**
@@ -18,13 +18,46 @@ const adapterConfig = { knexOptions: { connection: process.env.DATABASE_URL } };
  */
 
 const userSchema = require('./lists/User');
+const mobileSchema = require('./lists/Mobile');
+const networkSchema = require('./lists/mobile/Network');
+const launchSchema = require('./lists/mobile/Launch');
+const bodySchema = require('./lists/mobile/Body');
+const displaySchema = require('./lists/mobile/Display');
+const platformSchema = require('./lists/mobile/Platform');
+const memorySchema = require('./lists/mobile/Memory');
+const mainCameraSchema = require('./lists/mobile/MainCamera');
+const selfieCameraSchema = require('./lists/mobile/SelfieCamera');
+const soundSchema = require('./lists/mobile/Sound');
+const communicationSchema = require('./lists/mobile/Communication');
+const featureSchema = require('./lists/mobile/Feature');
+const batterySchema = require('./lists/mobile/Battery');
+const miscSchema = require('./lists/mobile/Misc');
+const memoryDescriptionSchema = require('./lists/utils/MemoryDescription');
+const mainCameraDescriptionSchema = require('./lists/utils/MemoryDescription');
 
 
 const keystone = new Keystone({
   adapter: new Adapter(adapterConfig),
+
 });
 
 keystone.createList('User', userSchema);
+keystone.createList('Mobile', mobileSchema);
+keystone.createList('Network', networkSchema);
+keystone.createList('Launch', launchSchema);
+keystone.createList('Body', bodySchema);
+keystone.createList('Display', displaySchema);
+keystone.createList('Platform', platformSchema);
+keystone.createList('Memory', memorySchema);
+keystone.createList('MainCamera', mainCameraSchema);
+keystone.createList('SelfieCamera', selfieCameraSchema);
+keystone.createList('Sound', soundSchema);
+keystone.createList('Communication', communicationSchema);
+keystone.createList('Feature', featureSchema);
+keystone.createList('Battery', batterySchema);
+keystone.createList('Misc', miscSchema);
+keystone.createList('MemoryDescription', memoryDescriptionSchema);
+keystone.createList('MainCameraDescription', mainCameraDescriptionSchema);
 
 module.exports = {
   keystone,
