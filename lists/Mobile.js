@@ -1,7 +1,11 @@
-const { Relationship } = require('@keystonejs/fields');
+const { Relationship, Text } = require('@keystonejs/fields');
 
 const mobileFields = {
     fields: {
+        name: {
+            type: Text,
+            isUnique: true
+        },
         network: {
             type: Relationship,
             ref: "Network",
