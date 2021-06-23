@@ -18,6 +18,7 @@ const adapterConfig = { knexOptions: { connection: process.env.DATABASE_URL }, d
  */
 
 const userSchema = require('./lists/User');
+const companySchema = require('./lists/Company');
 const mobileSchema = require('./lists/Mobile');
 const networkSchema = require('./lists/mobile/Network');
 const launchSchema = require('./lists/mobile/Launch');
@@ -42,6 +43,7 @@ const keystone = new Keystone({
 });
 
 keystone.createList('User', userSchema);
+keystone.createList('Company', companySchema);
 keystone.createList('Mobile', mobileSchema);
 keystone.createList('Network', networkSchema);
 keystone.createList('Launch', launchSchema);
