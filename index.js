@@ -4,7 +4,7 @@ const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 const { KnexAdapter: Adapter } = require('@keystonejs/adapter-knex');
 const PROJECT_NAME = process.env.PROJECT_NAME;
-const adapterConfig = { knexOptions: { connection: process.env.DATABASE_URL } };
+const adapterConfig = { knexOptions: { connection: process.env.DATABASE_URL }, dropDatabase: true };
 
 
 /**
@@ -35,6 +35,7 @@ const batterySchema = require('./lists/mobile/Battery');
 const miscSchema = require('./lists/mobile/Misc');
 const memoryDescriptionSchema = require('./lists/utils/MemoryDescription');
 const mainCameraDescriptionSchema = require('./lists/utils/MemoryDescription');
+const affilateLinkSchema = require('./lists/utils/AffilateLink');
 
 
 const keystone = new Keystone({
@@ -60,8 +61,12 @@ keystone.createList('Battery', batterySchema);
 keystone.createList('Misc', miscSchema);
 keystone.createList('MemoryDescription', memoryDescriptionSchema);
 keystone.createList('MainCameraDescription', mainCameraDescriptionSchema);
+keystone.createList('AffilateLink', affilateLinkSchema);
 
 module.exports = {
   keystone,
-  apps: [new GraphQLApp(), new AdminUIApp({ name: PROJECT_NAME, enableDefaultRoute: true })],
+  apps: [
+    new GraphQLApp(),
+    new AdminUIApp({ name: PROJECT_NAME, enableDefaultRoute: true })
+  ],
 };

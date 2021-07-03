@@ -71,7 +71,11 @@ const mobileFields = {
             ref: "Misc",
             many: false
         },
-
+        affilate: {
+            type: Relationship,
+            ref: "AffilateLink",
+            many: true
+        }
     }
 }
 
