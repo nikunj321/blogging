@@ -4,7 +4,7 @@ const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 const { KnexAdapter: Adapter } = require('@keystonejs/adapter-knex');
 const PROJECT_NAME = process.env.PROJECT_NAME;
-const adapterConfig = { knexOptions: { connection: process.env.DATABASE_URL }, dropDatabase: true };
+const adapterConfig = { knexOptions: { connection: process.env.DATABASE_URL }, /**dropDatabase: true*/ };
 
 
 /**

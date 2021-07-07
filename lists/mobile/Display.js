@@ -27,6 +27,10 @@ const displayFields = {
             ref: "Mobile",
             many: true
         }
+    },
+    // labelField: 'type',
+    labelResolver: async item => {
+        return `${item.type} + ${item.resolution}`
     }
 }
 
