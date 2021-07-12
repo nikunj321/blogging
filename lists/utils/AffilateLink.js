@@ -1,7 +1,7 @@
 const { Text, Relationship } = require("@keystonejs/fields");
 
 
-const affilateLinkSchema = {
+const affilateLinkField = {
     fields: {
         name: {
             type: Text,
@@ -19,4 +19,4 @@ const affilateLinkSchema = {
     }
 }
 
-module.exports = affilateLinkSchema;
+module.exports = affilateLinkField;

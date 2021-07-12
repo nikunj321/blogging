@@ -1,5 +1,4 @@
 const { Text, Password, Checkbox } = require('@keystonejs/fields');
-const { adminOrOwner, onlyAdmin } = require('./utils/auth/authUtils');
 
 const userFields = {
     fields: {
@@ -11,9 +10,7 @@ const userFields = {
             type: Text,
             isRequired: true,
             isUnique: true,
-            access: {
-                read: adminOrOwner
-            }
+
             // admin and user can do CRUD but only own
             // access: {
             //     read: adminOrOwner,

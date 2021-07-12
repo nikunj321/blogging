@@ -1,181 +1,165 @@
-const { Relationship, Text, Select, DateTime } = require('@keystonejs/fields');
+const { Relationship, Text, Select, DateTime, Float, Integer, Virtual } = require('@keystonejs/fields');
 
 const mobileFields = {
     fields: {
         name: {
             type: Text,
-            isUnique: true
+            isRequired: true,
+            isUnique: true,
+            hooks: {
+                resolveInput: ({ resolvedData, fieldPath }) => {
+                    let name = resolvedData[fieldPath];
+
+                    if (name) {
+                        resolvedData[fieldPath] = name.trim().toLowerCase();
+                    }
+                    return resolvedData[fieldPath];
+                }
+            }
+        },
+        mobileName: {
+            type: Virtual,
+            graphQLReturnType: `String`,
+            resolver: (item) => {
+                const { name } = item;
+                return name.split(" ").map(word => (word.chatAt(0).toUpperCase() + word.slice(1))).join(" ");
+            }
         },
         brand: {
             type: Relationship,
             ref: "Company",
+            isRequired: true,
             many: false
         },
-        wlan: {
+        image: {
+            type: Relationship,
+            ref: "Image",
+            many: true
+        },
+        technology: {
             type: Text,
-            isRequired: true,
-            defaultValue: "Wi-Fi 802.11 b/g/n, Wi-Fi Direct, hotspot"
+            defaultValue: "GSM / HSPA / LTE"
         },
-        bluetooth: {
+        twoG: {
             type: Text,
-            isRequired: true,
-            defaultValue: "5.0, A2DP, LE"
+            Label: "2G bands",
+            defaultValue: "GSM 850 / 900 / 1800 / 1900 - SIM 1 & SIM 2"
         },
-        gps: {
+        threeG: {
             type: Text,
-            isRequired: true,
-            defaultValue: "Yes, with A-GPS, GLONASS, GALILEO, BDS"
+            label: "3G bands",
+            defaultValue: "HSDPA 850 / 900 / 2100"
         },
-        nfc: {
-            type: Select,
-            isRequired: true,
-            options: [
-                { value: "YES", label: "Yes" },
-                { value: "NO", label: "No" },
-            ],
-            defaultValue: "NO",
-        },
-        usb: {
+        fourG: {
             type: Text,
-            isRequired: true,
-            defaultValue: "USB Type-C 2.0, USB On-The-Go"
+            label: "4G bands",
+            defaultValue: "1, 3, 5, 7, 8, 38, 40, 41"
         },
-        announced: {
+        fiveG: {
+            type: Text,
+            label: "5G bands"
+        },
+        speed: {
+            type: Text,
+            defaultValue: "HSPA 42.2/5.76 Mbps, LTE-A"
+        },
+        anouncedDate: {
             type: DateTime,
-            format: "yyyy/MMMM/dd",
+            format: "dd/MMMM/yyyy"
         },
-        status: {
-            type: Select,
-            options: [
-                { value: 'AVAILABLE', label: 'Available' },
-                { value: 'UNAVAILABLE', label: 'Unavailable' },
-            ],
-            defaultValue: 'AVAILABLE'
+        status: { type: Text },
+        releasedDate: {
+            type: DateTime,
+            format: "dd/MMMM/yyyy"
         },
-        dimensions: {
+        // Body
+        height: { type: Float },
+        width: { type: Float },
+        thickness: { type: Float },
+        ratio: {
+            type: Virtual,
+            graphQLReturnType: `String`,
+            resolver: (item) => {
+                const { height, width, thickness } = item;
+                const inInches = (value) => {
+                    return Number(value * 0.0393701).toFixed(2);
+                }
+
+                if (height && width && thickness) {
+                    return `${height} x ${width} x ${thickness} mm (${inInches(height)} x ${inInches(width)} x ${inInches(thickness)} in)`;
+                }
+
+                return null;
+            }
+        },
+        weight: { type: Integer },
+        weightInOunce: {
+            type: Virtual,
+            graphQLReturnType: `Float`,
+            resolver: (item) => {
+                if (!item.weight) {
+                    return null;
+                }
+
+                let weight = (Number(item.weight) * 0.035274).toFixed(2)
+                return Number(weight);
+            }
+        },
+        build: { type: Text, defaultValue: "Glass front, plastic back, plastic frame" },
+        sim: { type: Text, defaultValue: "Dual SIM (Nano-SIM, dual stand-by)" },
+        // Display
+        displayType: { type: Text, defaultValue: "PLS IPS, 90Hz" },
+        displaySize: { type: Text, defaultValue: '6.5 inches, 102.0 cm2 (~81.9% screen-to-body ratio' },
+        displayResolution: { type: Text, defaultValue: "720 x 1600 pixels, 20:9 ratio (~270 ppi density)" },
+        // Platform
+        operatingSystem: { type: Text },
+        systemUI: {
             type: Text,
-            defaultValue: "164 x 75.9 x 9.7 mm (6.46 x 2.99 x 0.38 in)",
-            isRequired: true
+            label: "System UI"
         },
-        weight: {
+        processor: { type: Text },
+        cpu: { type: Text, label: "CPU" },
+        gpu: { type: Text, label: "GPU" },
+        // memory
+        memoryCardSlot: {
             type: Text,
-            defaultValue: "221 g (7.80 oz)",
-            isRequired: true
+            defaultValue: "microSDXC (dedicated slot)"
         },
-        build: {
-            type: Text,
-            defaultValue: "Glass front, plastic back, plastic frame",
-            isRequired: true
-        },
-        sim: {
-            type: Text,
-            defaultValue: "Dual SIM (Nano-SIM, dual stand-by)",
-            isRequired: true
-        },
-        type: {
-            type: Text,
-            defaultValue: "PLS IPS, 90Hz",
-            isRequired: true,
-        },
-        size: {
-            type: Text,
-            defaultValue: '6.5 inches, 102.0 cm\U+00Bx2 (~81.9% screen-to-body ration)',
-            isRequired: true,
-        },
-        resolution: {
-            type: Text,
-            defaultValue: "720 x 1600 pixels, 20:9 ratio (~270 ppi density)",
-            isRequired: true,
-        },
-        protection: {
-            type: Text,
-            defaultValue: "Corning Gorila Glass",
-            isRequired: true,
-        },
-        OS: {
-            type: Text,
-            defaultValue: "Android 11, One UI 3.1",
-            isRequired: true,
-        },
-        chipset: {
-            type: Text,
-            defaultValue: "Exynos 850(8nm)",
-            isRequired: true,
-        },
-        CPU: {
-            type: Text,
-            defaultValue: "Octa-core (4x2.0 GHz Cortex-A55 & 4x2.0 GHz Cortex-A55)",
-            isRequired: true,
-        },
-        GPU: {
-            type: Text,
-            defaultValue: "Mali-G52",
-            isRequired: true,
-        },
-        cardSlot: {
-            type: Text,
-            defaultValue: "microSDXC (dedicated slot)",
-            isRequired: true,
-        },
-        internal: {
-            type: Text,
-        },
-        Quad: {
-            type: Text,
-        },
-        feature: {
-            type: Text,
-            defaultValue: "LED flash, panorama, HDR",
-            isRequired: true,
-        },
-        video: {
-            type: Text,
-            defaultValue: "1080p@30fps",
-            isRequired: true
-        },
-        single: {
-            type: Text,
-            defaultValue: "8 MP, f/2.2, (wide)"
-        },
+        internalMemory: { type: Text },
+        // main Camera
+        noOfCamera: { type: Text },
         features: {
             type: Text,
-            defaultValue: "HDR"
+            label: "Rear camera feature"
         },
-        video: {
-            type: Text,
-            defaultValue: "1080p@30fps"
-        },
-        // sound: {
-        //     type: Relationship,
-        //     ref: "Sound",
-        //     many: false
-        // },
-        // communication: {
-        //     type: Relationship,
-        //     ref: "Communication",
-        //     many: false
-        // },
-        // features: {
-        //     type: Relationship,
-        //     ref: "Feature",
-        //     many: false
-        // },
-        // battery: {
-        //     type: Relationship,
-        //     ref: "Battery",
-        //     many: false
-        // },
-        // misc: {
-        //     type: Relationship,
-        //     ref: "Misc",
-        //     many: false
-        // },
-        // affilate: {
-        //     type: Relationship,
-        //     ref: "AffilateLink",
-        //     many: true
-        // }
+        video: { type: Text },
+        // Front camera
+        camera: { type: Text, label: "front Camera" },
+        frontCameraVideo: { type: Text },
+        // Sound
+        loudSpeaker: { type: Text },
+        threeMM: { type: Text, label: "3.5mm Jack" },
+        // communication
+        wlan: { type: Text },
+        bluetooth: { type: Text },
+        gps: { type: Text },
+        nfc: { type: Text },
+        radio: { type: Text },
+        usb: { type: Text },
+        // feature
+        sensor: { type: Text },
+        batteryType: { type: Text },
+        Charging: { type: Text },
+        capacity: { type: Text },
+        color: { type: Text },
+        model: { type: Text },
+        test: { type: Text },
+        affilate: {
+            type: Relationship,
+            ref: "AffilateLink",
+            many: true
+        }
     }
-}
+};
 
 module.exports = mobileFields;
