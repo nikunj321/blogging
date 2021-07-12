@@ -1,4 +1,4 @@
-const { Relationship, Text, Select, DateTime, Float, Integer, Virtual } = require('@keystonejs/fields');
+const { Relationship, Text, DateTime, Float, Integer, Virtual } = require('@keystonejs/fields');
 
 const mobileFields = {
     fields: {
