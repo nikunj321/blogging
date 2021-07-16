@@ -22,7 +22,7 @@ const mobileFields = {
             graphQLReturnType: `String`,
             resolver: (item) => {
                 const { name } = item;
-                return name.split(" ").map(word => (word.chatAt(0).toUpperCase() + word.slice(1))).join(" ");
+                return name.split(" ").map(word => (word.charAt(0).toUpperCase() + word.slice(1))).join(" ");
             }
         },
         brand: {
