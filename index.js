@@ -24,7 +24,7 @@ const { initializeAdmin } = require('./helper/initialiseAdmin');
 
 const keystone = new Keystone({
   adapter: new Adapter(adapterConfig),
-  onConnect: initializeAdmin,  
+  onConnect: initializeAdmin,
 });
 
 keystone.createList('User', userFields);
@@ -32,14 +32,14 @@ keystone.createList('Company', companyFields);
 keystone.createList('Mobile', mobileFields);
 keystone.createList('Image', imageField)
 keystone.createList('AffilateLink', affilateLinkField)
-// const authStrategy = keystone.createAuthStrategy({
-//   type: PasswordAuthStrategy,
-//   list: "User",
-//   config: {
-//     identityField: "email",
-//     secretField: "password"
-//   }
-// })
+const authStrategy = keystone.createAuthStrategy({
+  type: PasswordAuthStrategy,
+  list: "User",
+  config: {
+    identityField: "email",
+    secretField: "password"
+  }
+})
 
 
 module.exports = {
@@ -49,7 +49,7 @@ module.exports = {
     new AdminUIApp({
       name: PROJECT_NAME,
       enableDefaultRoute: true,
-      // authStrategy
+      authStrategy
     })
   ],
 };

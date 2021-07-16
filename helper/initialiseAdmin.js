@@ -53,7 +53,7 @@ const initializeAdmin = async (keystone) => {
             const { email, password } = await createNewUser(keystone, {
                 email: process.env.ADMIN_EMIAL || 'admin@admin',
                 username: "admin",
-                password: "generate strong passord",
+                password: "123456789",
                 isAdmin: true
             });
 
