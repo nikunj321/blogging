@@ -5,7 +5,7 @@ const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
 const { KnexAdapter: Adapter } = require('@keystonejs/adapter-knex');
 const PROJECT_NAME = process.env.PROJECT_NAME;
-const adapterConfig = { knexOptions: { connection: process.env.DATABASE_URL }, dropDatabase: true };
+const adapterConfig = { knexOptions: { connection: process.env.DATABASE_URL }, /**dropDatabase: true*/ };
 
 
 /**

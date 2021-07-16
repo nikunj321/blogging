@@ -1,4 +1,4 @@
-const { Relationship, Text, Float, Integer, Virtual } = require('@keystonejs/fields');
+const { Relationship, Text, Float, Integer, Virtual, Url } = require('@keystonejs/fields');
 
 const mobileFields = {
     fields: {
@@ -229,7 +229,8 @@ const mobileFields = {
          * @description Affilate link
          */
         affilate: {
-            type: Relationship,
+            // type: Url,
+            type:Relationship,
             ref: "AffilateLink",
             many: true
         }
