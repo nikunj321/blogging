@@ -2,29 +2,6 @@ const { Relationship, Text, DateTime, Float, Integer, Virtual } = require('@keys
 
 const mobileFields = {
     fields: {
-        name: {
-            type: Text,
-            isRequired: true,
-            isUnique: true,
-            hooks: {
-                resolveInput: ({ resolvedData, fieldPath }) => {
-                    let name = resolvedData[fieldPath];
-
-                    if (name) {
-                        resolvedData[fieldPath] = name.trim().toLowerCase();
-                    }
-                    return resolvedData[fieldPath];
-                }
-            }
-        },
-        mobileName: {
-            type: Virtual,
-            graphQLReturnType: `String`,
-            resolver: (item) => {
-                const { name } = item;
-                return name.split(" ").map(word => (word.charAt(0).toUpperCase() + word.slice(1))).join(" ");
-            }
-        },
         brand: {
             type: Relationship,
             ref: "Company",
@@ -36,48 +13,77 @@ const mobileFields = {
             ref: "Image",
             many: true
         },
-        technology: {
+        name: {
             type: Text,
-            defaultValue: "GSM / HSPA / LTE"
+            label: "Mobile name",
+            isRequired: true,
+            hooks: {
+                resolveInput: ({ fieldPath, resolvedData }) => {
+                    if (resolvedData[fieldPath] !== null && resolvedData[fieldPath] !== " ")
+                        resolvedData[fieldPath] = resolvedDate[fieldPath].trim();
+                    return resolvedData[fieldPath];
+                }
+            }
         },
-        twoG: {
+        /**
+         *  @description Network
+         */
+        network: { type: Text },
+        networkTechnology: {
             type: Text,
-            Label: "2G bands",
-            defaultValue: "GSM 850 / 900 / 1800 / 1900 - SIM 1 & SIM 2"
+            label: "Network Technology",
         },
-        threeG: {
+        networkTwoG: {
             type: Text,
-            label: "3G bands",
-            defaultValue: "HSDPA 850 / 900 / 2100"
+            label: "Network 2G bands"
         },
-        fourG: {
+        networkThreeG: {
             type: Text,
-            label: "4G bands",
-            defaultValue: "1, 3, 5, 7, 8, 38, 40, 41"
+            label: "Network 3G bands"
         },
-        fiveG: {
+        networkFourG: {
             type: Text,
-            label: "5G bands"
+            label: "Network 4G bands"
         },
-        speed: {
+        networkFiveG: {
             type: Text,
-            defaultValue: "HSPA 42.2/5.76 Mbps, LTE-A"
+            label: "Network 5G bands"
         },
-        anouncedDate: {
-            type: DateTime,
-            format: "dd/MMMM/yyyy"
+        networkGprs: {
+            type: Text,
+            label: "Network GPRS"
         },
-        status: { type: Text },
-        releasedDate: {
-            type: DateTime,
-            format: "dd/MMMM/yyyy"
+        networkEdge: {
+            type: Text,
+            lable: "Network Edge"
         },
-        // Body
+        networkSpeed: {
+            type: Text,
+            label: "Network Speed"
+        },
+
+        /**
+         *  @description Launch
+         */
+
+        launchAnnounced: {
+            type: Text,
+            label: "Launch Announced"
+        },
+        launchStatus: {
+            type: Text,
+            label: "Launch Status"
+        },
+        /**
+         * @description Body
+         */
+        body: { type: Text },
         height: { type: Float },
         width: { type: Float },
         thickness: { type: Float },
-        ratio: {
+        bodyDimensions: {
             type: Virtual,
+            label: "Body Dimensions",
             graphQLReturnType: `String`,
             resolver: (item) => {
                 const { height, width, thickness } = item;
@@ -92,8 +98,8 @@ const mobileFields = {
                 return null;
             }
         },
-        weight: { type: Integer },
-        weightInOunce: {
+        bodyweight: { type: Integer, label: "Body Weight" },
+        bodyWeightInOunce: {
             type: Virtual,
             graphQLReturnType: `Float`,
             resolver: (item) => {
@@ -105,55 +111,123 @@ const mobileFields = {
                 return Number(weight);
             }
         },
-        build: { type: Text, defaultValue: "Glass front, plastic back, plastic frame" },
-        sim: { type: Text, defaultValue: "Dual SIM (Nano-SIM, dual stand-by)" },
-        // Display
-        displayType: { type: Text, defaultValue: "PLS IPS, 90Hz" },
-        displaySize: { type: Text, defaultValue: '6.5 inches, 102.0 cm2 (~81.9% screen-to-body ratio' },
-        displayResolution: { type: Text, defaultValue: "720 x 1600 pixels, 20:9 ratio (~270 ppi density)" },
-        // Platform
-        operatingSystem: { type: Text },
-        systemUI: {
+        bodySim: {
             type: Text,
-            label: "System UI"
+            label: "Body SIM"
         },
-        processor: { type: Text },
-        cpu: { type: Text, label: "CPU" },
-        gpu: { type: Text, label: "GPU" },
-        // memory
-        memoryCardSlot: {
+        bodyBuild: { type: Text, label: "Body Build" },
+        /**
+         *  @description Display
+         */
+        displayType: {
             type: Text,
-            defaultValue: "microSDXC (dedicated slot)"
+            label: "Display Type"
         },
-        internalMemory: { type: Text },
-        // main Camera
-        noOfCamera: { type: Text },
-        features: {
+        displaySize: {
+            type: Text
+        },
+        displayResolution: { type: Text },
+        display: { type: Text },
+        displayProtection: { type: Text, label: "Display Protection" },
+        /**
+         * @description Memory Card slot
+         */
+        memoryCardSlot: { type: Text, label: "memory card slot" },
+        /**
+         * @description Sound
+         */
+        soundLoudspeaker: { type: Text },
+        soundThree: { type: Text, label: "Sound 3mm jack" },
+
+        /**
+         * @description communiction 
+         */
+
+        commsWlan: {
             type: Text,
-            label: "Rear camera feature"
+            label: "Communication WLAN"
         },
-        video: { type: Text },
-        // Front camera
-        camera: { type: Text, label: "front Camera" },
-        frontCameraVideo: { type: Text },
-        // Sound
-        loudSpeaker: { type: Text },
-        threeMM: { type: Text, label: "3.5mm Jack" },
-        // communication
-        wlan: { type: Text },
-        bluetooth: { type: Text },
-        gps: { type: Text },
-        nfc: { type: Text },
-        radio: { type: Text },
-        usb: { type: Text },
-        // feature
-        sensor: { type: Text },
-        batteryType: { type: Text },
-        Charging: { type: Text },
-        capacity: { type: Text },
-        color: { type: Text },
-        model: { type: Text },
-        test: { type: Text },
+        commsBluetooth: { type: Text, label: "Communication Bluetooth" },
+        commsGps: { type: Text, label: "Communication GPS" },
+        commsRadio: { type: Text, label: "Communication Radio" },
+        commsNfc: { type: Text, label: "Communication NFC" },
+        commsInfraredPort: { type: Text, label: "Communication Infrared Port" },
+
+        /**
+         *  @description Features (sensors and others)
+         */
+
+        featureSensors: { type: Text, label: "Feature Sensor" },
+        features: { type: Text, label: "Features" },
+
+        /**
+         * @description Color and model
+         */
+
+        miscColors: { type: Text, label: 'Colors' },
+        miscModel: { type: Text, label: "Model" },
+
+        /**
+         * @description Platform
+         */
+
+        platformOs: {
+            type: Text,
+            label: "Operating System"
+        },
+        platformChipset: {
+            type: Text,
+            label: "processor"
+        },
+        playformCpu: {
+            type: Text,
+            label: "CPU"
+        },
+        platformGpu: {
+            type: Text,
+            label: "GPU"
+        },
+
+        /** 
+         * @description memory internal
+         */
+
+        memory: { type: Text },
+        memoryInternal: { type: Text, label: "Memory Internal" },
+
+        /**
+         * @description Main Camera
+         */
+        mainCamera: { type: Text },
+        mainCameraSingle: { type: Text, label: "Main Camera Single" },
+        mainCameraDual: { type: Text, label: "Main Camera Dual" },
+        mainCameraTriple: { type: Text, label: "Main Camera Triple" },
+        mainCameraFour: { type: Text, label: "Main Camera Four" },
+        mainCameraFive: { type: Text, label: "Main Camera Five" },
+        mainCameraVideo: { type: Text, label: "Main Camera Video" },
+        mainCameraFeature: { type: Text, label: "Main Camera Feature" },
+
+        /**
+         * @description Selfie Camera
+         */
+
+        selfieCamera: { type: Text, label: "Selfie Camera" },
+        selfieCameraSingle: { type: Text, label: "Selfie Camera Single" },
+        selfieCameraDual: { type: Text, label: "Selfie Camera Dual" },
+        selfieCameraTriple: { type: Text, label: "Selfie Camera Triple" },
+        selfieCameraFeatures: { type: Text, label: "Selfie Camera Features" },
+        selfieCameraVideo: { type: Text, label: "Selfie Camera Video" },
+
+        /**
+         * @description Battery
+         */
+
+        battery: { type: Text },
+        batteryCharging: { type: Text, label: "Battery Charging" },
+
+        /**
+         * @description Affilate link
+         */
         affilate: {
             type: Relationship,
             ref: "AffilateLink",
