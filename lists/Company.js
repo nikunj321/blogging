@@ -1,4 +1,5 @@
 const { Text, Relationship } = require('@keystonejs/fields');
+const { onlyAdmin } = require('../helper/auth');
 
 const companyFields = {
     fields: {
@@ -10,7 +11,7 @@ const companyFields = {
                     let name = resolvedData[fieldPath];
                     // console.log(resolvedData);
                     if (name) {
-                        resolvedData[fieldPath] = name.trim()
+                        resolvedData[fieldPath] = name.trim();
                     }
                     // console.log(resolvedData);
                     return resolvedData[fieldPath];
@@ -23,6 +24,12 @@ const companyFields = {
             ref: "Mobile",
             many: true
         }
+    },
+    access: {
+        read: () => true,
+        create: onlyAdmin,
+        update: onlyAdmin,
+        delete: onlyAdmin,
     }
 };
 
