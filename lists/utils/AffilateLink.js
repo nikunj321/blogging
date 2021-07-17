@@ -1,4 +1,5 @@
 const { Text, Relationship } = require("@keystonejs/fields");
+const { onlyAdmin } = require("../../helper/auth");
 
 
 const affilateLinkField = {
@@ -16,6 +17,12 @@ const affilateLinkField = {
             ref: "Mobile",
             many: false
         }
+    },
+    access: {
+        read: () => true,
+        create: onlyAdmin,
+        update: onlyAdmin,
+        delete: onlyAdmin
     }
 }
 

@@ -1,4 +1,5 @@
 const { Relationship, Text, Float, Integer, Virtual, Url } = require('@keystonejs/fields');
+const { onlyAdmin } = require('../helper/auth');
 
 const mobileFields = {
     fields: {
@@ -234,6 +235,12 @@ const mobileFields = {
             ref: "AffilateLink",
             many: true
         }
+    },
+    access: {
+        read: () => true,
+        create: onlyAdmin,
+        update: onlyAdmin,
+        delete: onlyAdmin,
     }
 };
 

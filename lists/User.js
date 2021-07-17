@@ -1,4 +1,5 @@
 const { Text, Password, Checkbox } = require('@keystonejs/fields');
+const { onlyAdmin, adminOROwner } = require('../helper/auth');
 
 const userFields = {
     fields: {
@@ -10,33 +11,29 @@ const userFields = {
             type: Text,
             isRequired: true,
             isUnique: true,
-
-            // admin and user can do CRUD but only own
-            // access: {
-            //     read: adminOrOwner,
-            //     update: adminOrOwner,
-            // }
+            access: {
+                read: adminOROwner,
+                update: adminOROwner,
+                delete: adminOROwner
+            }
         },
         password: {
             type: Password,
-            // access: {
-            //     // only admin can see if password is set or not
-            //     read: onlyAdmin,
-            //     update: adminOrOwner,
-
-            // }
+            access: {
+                read: onlyAdmin,
+                update: adminOROwner,
+                delete: adminOROwner
+            }
         },
         isAdmin: {
             type: Checkbox,
-            // access: onlyAdmin,
+            defaultValue: false,
+            access: onlyAdmin
         }
     },
-    // labelField: "username",
     access: {
         auth: true,
-        // create: onlyAdmin,
-        // update: onlyAdmin,
-        // delete: onlyAdmin,
+        delete: onlyAdmin,
     }
 };
 
