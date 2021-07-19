@@ -1,5 +1,6 @@
 const { Text, Relationship } = require('@keystonejs/fields');
 const { onlyAdmin } = require('../helper/auth');
+const { capitalise } = require('../helper/hookhelper');
 
 const companyFields = {
     fields: {
@@ -11,7 +12,7 @@ const companyFields = {
                     let name = resolvedData[fieldPath];
                     // console.log(resolvedData);
                     if (name) {
-                        resolvedData[fieldPath] = name.trim();
+                        resolvedData[fieldPath] = capitalise(name.trim());
                     }
                     // console.log(resolvedData);
                     return resolvedData[fieldPath];

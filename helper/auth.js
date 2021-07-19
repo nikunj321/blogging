@@ -1,15 +1,19 @@
 
 const adminOROwner = ({ existingItem, authentication: { item } }) => {
-    return Boolean(item.isAdmin || existingItem.id === item.id);
+    
+    if(item) {
+        return (item.isAdmin || item.id === existingItem.id) ? true : false;
+    }
+
+    return false;
 }
 
 const onlyAdmin = ({ authentication: { item } }) => {
 
-    if(item.isAdmin === 'undefined' || !item.isAdmin || item.isAdmin === null) {
-        return false;
-        throw new Error('Access Denied');
+    if(item && item.isAdmin) {
+        return true;
     }
-    return Boolean(item.isAdmin);
+    return false;
 }
 
 module.exports = { onlyAdmin, adminOROwner }
